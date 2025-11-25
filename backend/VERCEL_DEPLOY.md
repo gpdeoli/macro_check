@@ -79,7 +79,18 @@ Configure as seguintes variáveis de ambiente no Vercel:
    - Defina como: `production`
    - Isso desativa logs detalhados e ativa otimizações
 
-5. **PORT**
+5. **FRONTEND_URL**
+   - URL do frontend deployado no Vercel
+   - Exemplo: `https://seu-frontend.vercel.app`
+   - ⚠️ **IMPORTANTE**: Necessário para CORS funcionar corretamente
+   - O backend permite automaticamente domínios `*.vercel.app` em produção, mas é recomendado definir esta variável
+
+6. **ALLOWED_ORIGINS** (opcional)
+   - Lista de origens permitidas separadas por vírgula
+   - Exemplo: `https://seu-frontend.vercel.app,https://www.seu-dominio.com`
+   - Se não definido, permite localhost em desenvolvimento e `*.vercel.app` em produção
+
+7. **PORT**
    - Não é necessário no Vercel (gerenciado automaticamente)
    - Mas pode ser definido se necessário
 
