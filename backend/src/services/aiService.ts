@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import type { PlanMeal } from '@prisma/client';
+import type { PlanMeal } from '../generated/index.js';
 import dotenv from 'dotenv';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -171,10 +171,10 @@ export const compareWithPlan = (mealAnalysis: MealAnalysis, planMeal: PlanMeal |
 
     // Check allowed foods
     if (planMeal.allowed_foods) {
-      const allowed = planMeal.allowed_foods.toLowerCase().split(',').map(f => f.trim());
-      const detected = mealAnalysis.detected_foods.map(f => f.toLowerCase());
-      const matches = detected.some(food =>
-        allowed.some(allowed => food.includes(allowed) || allowed.includes(food))
+      const allowed = planMeal.allowed_foods.toLowerCase().split(',').map((f: string) => f.trim());
+      const detected = mealAnalysis.detected_foods.map((f: string) => f.toLowerCase());
+      const matches = detected.some((food: string) =>
+        allowed.some((allowedFood: string) => food.includes(allowedFood) || allowedFood.includes(food))
       );
       if (matches) {
         adherenceScore += 5;
