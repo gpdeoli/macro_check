@@ -9,6 +9,11 @@ export interface AuthRequest extends Request {
     email: string;
     name: string | null;
   };
+  file?: Express.Multer.File;
+  body: any;
+  params: any;
+  query: any;
+  headers: any;
 }
 
 export const authenticate = async (

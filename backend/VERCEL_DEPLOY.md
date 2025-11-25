@@ -49,6 +49,7 @@ Na página de configuração do projeto, configure:
 
 #### **Install Command**
 - Deixe como padrão: `npm install`
+- ⚠️ **IMPORTANTE**: O `vercel.json` já está configurado com `npm install --include=dev` para instalar dependências de desenvolvimento (necessárias para os tipos TypeScript)
 
 ## 🔐 Variáveis de Ambiente
 

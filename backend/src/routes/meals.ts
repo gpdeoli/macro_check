@@ -1,4 +1,4 @@
-import express, { Router, type Response } from 'express';
+import express, { Router, type Response, type Request } from 'express';
 import multer, { type FileFilterCallback } from 'multer';
 import path from 'node:path';
 import fs from 'node:fs';
@@ -26,11 +26,11 @@ const ensureUploadsDir = () => {
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
+  destination: (_req: Request, _file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
     ensureUploadsDir();
     cb(null, uploadsDir);
   },
-  filename: (req, file, cb) => {
+  filename: (_req: Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     cb(null, 'meal-' + uniqueSuffix + path.extname(file.originalname));
   }
