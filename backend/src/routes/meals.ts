@@ -11,7 +11,12 @@ const router = Router();
 
 // Apply authentication middleware to all routes
 router.use(authenticate);
-const uploadsDir = path.resolve(process.cwd(), 'uploads');
+
+// Use /tmp for serverless (Vercel), otherwise use uploads directory
+const isServerless = process.env.VERCEL === '1' || process.env.AWS_LAMBDA_FUNCTION_NAME;
+const uploadsDir = isServerless 
+  ? '/tmp' 
+  : path.resolve(process.cwd(), 'uploads');
 
 const ensureUploadsDir = () => {
   if (!fs.existsSync(uploadsDir)) {
