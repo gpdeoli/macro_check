@@ -1,4 +1,4 @@
-import OpenAI from 'openai';
+import { OpenAI } from 'openai';
 import type { PlanMeal } from '../generated/index.js';
 import dotenv from 'dotenv';
 import fs from 'node:fs';
