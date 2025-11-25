@@ -10,9 +10,6 @@ import { ptBR } from 'date-fns/locale'
 import { Flame, Target, TrendingUp, RefreshCw, Award, Calendar } from 'lucide-react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts'
 
-interface DailyScoreProps {
-}
-
 export function DailyScore() {
   const [score, setScore] = useState<any>(null)
   const [weeklyScores, setWeeklyScores] = useState<any[]>([])

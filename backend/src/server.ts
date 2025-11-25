@@ -31,6 +31,25 @@ app.use('/api/diary', diaryRoutes);
 app.use('/api/gamification', gamificationRoutes);
 app.use('/api/challenges', challengeRoutes);
 
+// Root route
+app.get('/', (_req: Request, res: Response) => {
+  res.json({ 
+    status: 'ok', 
+    message: 'MacroCheck API is running',
+    version: '1.0.0',
+    endpoints: {
+      health: '/api/health',
+      auth: '/api/auth',
+      nutritionalPlans: '/api/nutritional-plans',
+      meals: '/api/meals',
+      scores: '/api/scores',
+      diary: '/api/diary',
+      gamification: '/api/gamification',
+      challenges: '/api/challenges'
+    }
+  });
+});
+
 // Health check
 app.get('/api/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok', message: 'MacroCheck API is running' });
