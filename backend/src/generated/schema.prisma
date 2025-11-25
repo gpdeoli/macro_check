@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                       String                 @id @default(uuid())
+  email                    String                 @unique
+  password_hash            String
+  name                     String?
+  created_at               DateTime               @default(now())
+  updated_at               DateTime               @updatedAt
+  nutritional_plans        NutritionalPlan[]
+  meal_registrations       MealRegistration[]
+  daily_scores             DailyScore[]
+  gamification             UserGamification?
+  challenges_created       Challenge[]            @relation("ChallengeCreator")
+  challenge_participations ChallengeParticipant[]
+
+  @@map("users")
+}
+
+model NutritionalPlan {
+  id                 Int                @id @default(autoincrement())
+  user_id            String
+  user               User               @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  name               String
+  daily_calories     Int
+  is_active          Boolean            @default(false)
+  created_at         DateTime           @default(now())
+  updated_at         DateTime           @updatedAt
+  meals              PlanMeal[]
+  meal_registrations MealRegistration[]
+  daily_scores       DailyScore[]
+
+  @@map("nutritional_plans")
+}
+
+model PlanMeal {
+  id              Int             @id @default(autoincrement())
+  plan_id         Int
+  meal_name       String
+  suggested_time  String?
+  target_calories Int?
+  allowed_foods   String?
+  notes           String?
+  plan            NutritionalPlan @relation(fields: [plan_id], references: [id], onDelete: Cascade)
+
+  @@map("plan_meals")
+}
+
+model MealRegistration {
+  id                 Int              @id @default(autoincrement())
+  user_id            String
+  user               User             @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  plan_id            Int?
+  meal_name          String
+  photo_url          String
+  ai_analysis        Json?
+  detected_foods     Json?
+  estimated_calories Float?
+  estimated_protein  Float?
+  estimated_carbs    Float?
+  estimated_fats     Float?
+  meal_score         Int?
+  adherence_tags     Json?
+  ai_message         String?
+  registered_at      DateTime         @default(now())
+  plan               NutritionalPlan? @relation(fields: [plan_id], references: [id], onDelete: SetNull)
+
+  @@map("meal_registrations")
+}
+
+model DailyScore {
+  id                 Int              @id @default(autoincrement())
+  user_id            String
+  user               User             @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  plan_id            Int?
+  date               DateTime
+  total_calories     Float?
+  target_calories    Int?
+  average_meal_score Int?
+  daily_score        Int?
+  streak_days        Int?             @default(0)
+  status             String?
+  created_at         DateTime         @default(now())
+  plan               NutritionalPlan? @relation(fields: [plan_id], references: [id], onDelete: SetNull)
+
+  @@unique([user_id, date])
+  @@map("daily_scores")
+}
+
+model UserGamification {
+  id                     Int      @id @default(autoincrement())
+  user_id                String   @unique
+  user                   User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  total_xp               Int      @default(0)
+  current_level          Int      @default(1)
+  total_meals_registered Int      @default(0)
+  current_streak         Int      @default(0)
+  longest_streak         Int      @default(0)
+  badges                 Json?
+  updated_at             DateTime @default(now()) @updatedAt
+
+  @@map("user_gamification")
+}
+
+model Challenge {
+  id            Int                    @id @default(autoincrement())
+  creator_id    String
+  creator       User                   @relation("ChallengeCreator", fields: [creator_id], references: [id], onDelete: Cascade)
+  name          String
+  description   String?
+  duration_days Int
+  min_score     Int                    @default(70)
+  invite_code   String                 @unique
+  start_date    DateTime?
+  end_date      DateTime?
+  created_at    DateTime               @default(now())
+  participants  ChallengeParticipant[]
+
+  @@map("challenges")
+}
+
+model ChallengeParticipant {
+  id             Int       @id @default(autoincrement())
+  challenge_id   Int
+  user_id        String
+  user           User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  average_score  Float?    @default(0)
+  current_streak Int?      @default(0)
+  badges_earned  Json?
+  joined_at      DateTime  @default(now())
+  challenge      Challenge @relation(fields: [challenge_id], references: [id], onDelete: Cascade)
+
+  @@unique([challenge_id, user_id])
+  @@map("challenge_participants")
+}
